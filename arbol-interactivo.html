@@ -174,6 +174,7 @@ function readTeacherChanges(){
   return {added:[],removed:[]};
 }
 function teacherNames(){
+  if(shared)return [...data.teachers].sort((a,b)=>a.localeCompare(b,'es'));
   const {added,removed}=readTeacherChanges();
   return [...new Set([...baseTeachers,...added])].filter(name=>!removed.includes(name))
     .sort((a,b)=>a.localeCompare(b,'es'));
@@ -197,13 +198,190 @@ async function loadPublishedTeachers(){
     }
   }catch(error){}
 }
-let data=load(), currentTab='words', selectedCategory='personal';
+const shared=location.protocol==='https:' || location.protocol==='http:';
+const apiUrl='https://iinusdowsbujeenxhdgh.supabase.co/rest/v1/rpc/arbol_event';
+const apiKey='sb_publishable_tsk1kXtiUOsGc51JWAPNUQ_6yeY48or';
+const accessKey=KEY+'-event-code';
+const ownerKey=KEY+'-browser-id';
+let eventCode='', coordinationCode='', connectionVersion=0, refreshing=false;
+
+function browserToken(){
+  let token=localStorage.getItem(ownerKey);
+  if(!token){
+    token=Array.from(crypto.getRandomValues(new Uint8Array(32)),value=>value.toString(16).padStart(2,'0')).join('');
+    localStorage.setItem(ownerKey,token);
+  }
+  return token;
+}
+async function eventRequest(op,payload={},code=eventCode){
+  let response;
+  try{
+    response=await fetch(apiUrl,{method:'POST',headers:{apikey:apiKey,'Content-Type':'application/json'},
+      body:JSON.stringify({op,code,payload}),signal:AbortSignal.timeout(12000)});
+  }catch(error){
+    throw new Error('No pudimos conectar con el árbol. Probá de nuevo.');
+  }
+  const result=await response.json();
+  if(!response.ok){
+    throw new Error(result.code==='P0001'?result.message:'La base del árbol todavía no está disponible. Avisale a Coordinación.');
+  }
+  return result;
+}
+function applySnapshot(snapshot){
+  data=snapshot;
+  render();
+}
+async function refreshShared(){
+  if((!eventCode&&!coordinationCode) || refreshing)return;
+  refreshing=true;
+  const version=connectionVersion;
+  try{
+    const snapshot=coordinationCode?await eventRequest('admin',{},coordinationCode):await eventRequest('snapshot');
+    if(version===connectionVersion)applySnapshot(snapshot);
+  }catch(error){
+    // A temporary outage leaves the last successfully loaded tree on screen.
+  }finally{
+    refreshing=false;
+  }
+}
+function requestEventCode(){
+  modal(`${header('Entrá al árbol','Ingresá el código que compartió Coordinación.')}
+    <form id="eventAccess"><div class="field"><label for="eventCode">Código del encuentro</label>
+    <input id="eventCode" required maxlength="32" autocapitalize="characters" autocomplete="off"></div>
+    <p class="bad" id="eventError" role="alert"></p><button class="btn" type="submit">Entrar al árbol</button></form>`);
+  const form=document.getElementById('eventAccess');
+  const input=document.getElementById('eventCode');
+  input.focus();
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    const code=input.value.trim();
+    const button=form.querySelector('button');
+    const error=document.getElementById('eventError');
+    button.disabled=true;
+    error.textContent='';
+    try{
+      const snapshot=await eventRequest('snapshot',{},code);
+      if(!form.isConnected)return;
+      eventCode=code;
+      connectionVersion++;
+      localStorage.setItem(accessKey,code);document.querySelector('.demo-banner').hidden=true;
+      applySnapshot(snapshot);
+      close();
+      document.getElementById('giftBtn').focus();
+    }catch(failure){
+      error.textContent=failure.message;
+    }finally{
+      button.disabled=false;
+    }
+  };
+}
+async function startShared(){
+  document.querySelector('.demo-banner').textContent='Entrá con el código del encuentro para leer y regalar hojas.';
+  const code=localStorage.getItem(accessKey);
+  if(code){
+    try{
+      applySnapshot(await eventRequest('snapshot',{},code));
+      eventCode=code;
+      connectionVersion++;
+    }catch(error){}
+  }
+  const banner=document.querySelector('.demo-banner');
+  banner.hidden=Boolean(eventCode);
+  document.getElementById('giftBtn').onclick=()=>{
+    if(eventCode)gift();
+    else requestEventCode();
+  };
+  document.getElementById('adminBtn').onclick=sharedAdmin;
+  if(!eventCode)requestEventCode();
+  setInterval(()=>{if(!document.hidden)refreshShared();},6000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshShared();});
+}
+function sharedAdmin(){
+  modal(`${header('Coordinación')}<form id="sharedAdminLogin">
+    <div class="field"><label for="sharedAdminCode">Código de Coordinación</label><input type="password" id="sharedAdminCode" required maxlength="128"></div>
+    <p class="bad" id="sharedAdminError" role="alert"></p><button class="btn" type="submit">Entrar</button></form>`);
+  const form=document.getElementById('sharedAdminLogin');
+  form.onsubmit=async event=>{
+    event.preventDefault();
+    const code=document.getElementById('sharedAdminCode').value.trim();
+    const error=document.getElementById('sharedAdminError');
+    const button=form.querySelector('button');
+    button.disabled=true;
+    try{
+      const snapshot=await eventRequest('admin',{},code);
+      if(!form.isConnected)return;
+      coordinationCode=code;
+      applySnapshot(snapshot);
+      sharedAdminPanel();
+    }catch(failure){error.textContent=failure.message;}
+    finally{button.disabled=false;}
+  };
+}
+function sharedAdminPanel(){
+  modal(`${header('Coordinación','Los cambios se aplican al árbol compartido.')}
+    <div class="admin-grid">
+      <button class="btn" id="sharedReveal">${data.revealed?'Ocultar las nubes':'Revelar las tres nubes'}</button>
+      <button class="btn soft" id="sharedTeachers">Gestionar docentes</button>
+      <button class="btn secondary" id="sharedModerate">Retirar una hoja</button>
+      <button class="btn secondary" id="sharedReopen">Habilitar otro navegador</button><button class="btn secondary" id="sharedCsv">Exportar mensajes CSV</button>
+    </div><p class="bad" id="adminActionError" role="alert"></p>`);
+  const revealButton=document.getElementById('sharedReveal');
+  revealButton.onclick=()=>runAdminAction(revealButton,'reveal',{show:!data.revealed},()=>close());
+  document.getElementById('sharedTeachers').onclick=()=>manageTeachers();
+  document.getElementById('sharedReopen').onclick=reopenSharedEntry;
+  document.getElementById('sharedCsv').onclick=exportCSV;
+  document.getElementById('sharedModerate').onclick=moderateSharedLeaves;
+}
+async function runAdminAction(button,op,payload,onSuccess){
+  const error=document.getElementById('adminActionError');
+  button.disabled=true;
+  error.textContent='';
+  try{
+    await eventRequest(op,payload,coordinationCode);
+    connectionVersion++;
+    applySnapshot(await eventRequest('admin',{},coordinationCode));
+    if(button.isConnected)onSuccess();
+  }catch(failure){error.textContent=failure.message;}
+  finally{button.disabled=false;}
+}
+function reopenSharedEntry(){
+  const options=teacherNames().map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');
+  modal(`${header('Habilitar otro navegador','Las hojas se conservan. La próxima publicación con ese nombre vinculará el nuevo navegador.')}
+    <form id="sharedReopenForm"><div class="field"><label for="reopenName">Docente</label>
+    <select id="reopenName" required><option value="">Elegí un nombre</option>${options}</select></div>
+    <p class="bad" id="adminActionError" role="alert"></p><button class="btn" type="submit">Habilitar edición</button></form>
+    <button class="btn soft" id="sharedReopenBack">Volver a Coordinación</button>`);
+  const form=document.getElementById('sharedReopenForm');
+  document.getElementById('sharedReopenBack').onclick=sharedAdminPanel;
+  form.onsubmit=event=>{
+    event.preventDefault();
+    const name=document.getElementById('reopenName').value;
+    if(name && confirm('¿Habilitar otro navegador para '+name+'?')){
+      runAdminAction(form.querySelector('button'),'reopen',{name},sharedAdminPanel);
+    }
+  };
+}
+function moderateSharedLeaves(){
+  const leaves=leafItems();
+  modal(`${header('Retirar una hoja')}
+    <div class="listmsgs">${leaves.map((leaf,index)=>`<article class="msgitem"><div class="message">${esc(leaf.text)}</div>
+    <p class="who">${esc(leaf.anonymous?'Sin firma':leaf.author)}</p><button class="btn secondary" data-remove-leaf="${index}">Retirar hoja</button></article>`).join('')||'<p>Todavía no hay hojas.</p>'}</div>
+    <p class="bad" id="adminActionError" role="alert"></p><button class="btn soft" id="sharedBack">Volver a Coordinación</button>`);
+  document.getElementById('sharedBack').onclick=sharedAdminPanel;
+  document.querySelectorAll('[data-remove-leaf]').forEach(button=>button.onclick=()=>{
+    const leaf=leaves[Number(button.dataset.removeLeaf)];
+    if(confirm('¿Retirar esta hoja del árbol compartido?')){
+      runAdminAction(button,'remove_leaf',{id:leaf.personId,index:leaf.index},moderateSharedLeaves);
+    }
+  });
+}
+let data=shared?{people:[],revealed:false,teachers:[]}:load(), currentTab='words', selectedCategory='personal';
 function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.people))return s;}catch(e){}return {people:[],revealed:false};}
 function save(){localStorage.setItem(KEY,JSON.stringify(data));render();}
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-function leafItems(){return data.people.flatMap(p=>p.messages.map((m,i)=>({...m,cat:cats[i],index:i,id:p.id+':'+i,author:p.name,personId:p.id})));}
+function leafItems(){return data.people.flatMap(p=>p.messages.flatMap((m,i)=>m?[{...m,cat:cats[i],index:i,id:p.id+':'+i,author:m.author??p.name,personId:p.personId??p.id}]:[]));}
 function pos(i,total){const golden=2.399963229728653;const t=(i+.5)/Math.max(total,1),r=Math.sqrt(t),a=i*golden;return {x:398+205*r*Math.cos(a),y:259+152*r*Math.sin(a)};}
-function render(){document.getElementById('peopleCount').textContent=data.people.length;const items=leafItems();document.getElementById('leafCount').textContent=items.length;const leafRoot=document.getElementById('leaves');leafRoot.innerHTML=items.map((m,i)=>{const p=pos(i,Math.max(items.length,1)),angle=(i*89)%180-90;return `<g class="leaf" data-id="${esc(m.id)}" role="button" tabindex="0" aria-label="Leer hoja: ${esc(catNames[m.index])}" transform="translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) rotate(${angle})"><ellipse cx="0" cy="0" rx="${items.length>110?10:items.length>60?12:15}" ry="${items.length>110?6:items.length>60?7:9}" fill="${colors[m.index]}"></ellipse><path d="M-6 0H7" stroke="#fff" opacity=".6" stroke-width=".9"/></g>`;}).join('');document.getElementById('scene').classList.toggle('revealed',!!data.revealed);document.getElementById('sceneHint').textContent=data.revealed?'Tocá una nube para ver palabras destacadas y mensajes completos. Las hojas siguen disponibles.':'Tocá una hoja para leer su mensaje. Cada docente aporta tres hojas.';if(data.revealed) cats.forEach((c,i)=>{
+function render(){document.getElementById('peopleCount').textContent=data.participantCount??data.people.length;const items=leafItems();document.getElementById('leafCount').textContent=items.length;const leafRoot=document.getElementById('leaves');leafRoot.innerHTML=items.map((m,i)=>{const p=pos(i,Math.max(items.length,1)),angle=(i*89)%180-90;return `<g class="leaf" data-id="${esc(m.id)}" role="button" tabindex="0" aria-label="Leer hoja: ${esc(catNames[m.index])}" transform="translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) rotate(${angle})"><ellipse cx="0" cy="0" rx="${items.length>110?10:items.length>60?12:15}" ry="${items.length>110?6:items.length>60?7:9}" fill="${colors[m.index]}"></ellipse><path d="M-6 0H7" stroke="#fff" opacity=".6" stroke-width=".9"/></g>`;}).join('');document.getElementById('scene').classList.toggle('revealed',!!data.revealed);document.getElementById('sceneHint').textContent=data.revealed?'Tocá una nube para ver palabras destacadas y mensajes completos. Las hojas siguen disponibles.':'Tocá una hoja para leer su mensaje. Cada docente aporta tres hojas.';if(data.revealed) cats.forEach((c,i)=>{
   const words=topWords(items.filter(m=>m.cat===c).map(m=>m.text),16);
   document.getElementById('cloudPreview'+i).innerHTML=wordCloudArt(words,i).markup;
 });}
@@ -262,7 +440,7 @@ function gift(){
       <div class="gift-actions"><button class="btn soft" type="button" id="giftCancelName">Cancelar</button><button class="btn" type="submit">Usar este nombre</button></div>
     </form>`:'';
     modal(`<div class="gift-compose"><div class="gift-progress"><span>${colors.map((_,index)=>leaf(index,index===step)).join('')}</span>${prompt?`<span>Hoja ${step+1} de 3</span>`:''}</div>
-      ${header(title)}${identity}<form id="giftForm">${content}<div class="gift-actions">
+      ${header(title)}${identity}<form id="giftForm">${content}${shared?'<p class="bad" id="giftSharedError" role="alert"></p>':''}<div class="gift-actions">
         ${step>0&&!returnToReview?'<button type="button" class="btn soft" id="giftBack">Volver</button>':''}
         <button class="btn" type="submit">${action}</button></div></form></div>`);
     const dialog=document.querySelector('#modalRoot .dialog');
@@ -312,14 +490,27 @@ function gift(){
       changeButton.onclick=()=>toggleIdentity(identityForm.hidden);
       document.getElementById('giftCancelName').onclick=()=>toggleIdentity(false);
       newName.onchange=()=>{identityError.hidden=true;};
-      identityForm.onsubmit=event=>{
+      identityForm.onsubmit=async event=>{
         event.preventDefault();
         const name=newName.value;
         if(!name || name===author){
           toggleIdentity(false);
           return;
         }
-        if(data.people.some(person=>person.name===name) && name!==originalAuthor){
+        let alreadyPublished=data.people.some(person=>person.name===name);
+        if(shared && name!==originalAuthor){
+          const submit=identityForm.querySelector('[type=submit]');
+          submit.disabled=true;
+          try{
+            alreadyPublished=Boolean(await eventRequest('own',{name,token:browserToken()}));
+          }catch(failure){
+            identityError.textContent=failure.message;
+            identityError.hidden=false;
+            return;
+          }finally{submit.disabled=false;}
+          if(!identityForm.isConnected || identityForm.hidden)return;
+        }
+        if(alreadyPublished && name!==originalAuthor){
           identityError.textContent='Ese nombre ya tiene hojas publicadas. Podés abrirlas desde el inicio sin reemplazarlas con este borrador.';
           identityError.hidden=false;
           newName.focus();
@@ -341,14 +532,33 @@ function gift(){
       returnToReview=true;
       show();
     }));
-    form.addEventListener('submit',event=>{
+    form.addEventListener('submit',async event=>{
       event.preventDefault();
       if(review){
         const messages=notes.map((note,index)=>({...note,text:note.text.trim(),target:index===0?target:null}));
-        const person=data.people.find(entry=>entry.name===author);
-        if(person)person.messages=messages;
-        else data.people.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),name:author,messages});
-        save();
+
+        if(shared){
+          const submit=form.querySelector('[type=submit]');
+          const status=document.getElementById('giftSharedError');
+          submit.disabled=true;
+          status.textContent='';
+          try{
+            await eventRequest('publish',{name:author,token:browserToken(),messages});
+            connectionVersion++;
+            refreshShared();
+          }catch(failure){
+            status.textContent=failure.message;
+            return;
+          }finally{
+            submit.disabled=false;
+          }
+          if(!form.isConnected)return;
+        }else{
+          const person=data.people.find(entry=>entry.name===author);
+          if(person)person.messages=messages;
+          else data.people.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),name:author,messages});
+          save();
+        }
         modal(`<div class="gift-compose"><div class="gift-progress"><span>${colors.map((_,index)=>leaf(index)).join('')}</span></div>
           ${header(editing?'Tus hojas quedaron actualizadas':'Tus hojas ya son parte del árbol')}
           <p class="gift-intro">${editing?'Podés volver al árbol para leerlas.':'Gracias por poner en palabras algo de lo que compartimos este año.'}</p>
@@ -357,8 +567,23 @@ function gift(){
         return;
       }
       if(nameInput && nameInput.value!==author){
+
+        let person=data.people.find(entry=>entry.name===nameInput.value);
+        if(shared){
+          const submit=form.querySelector('[type=submit]');
+          const status=document.getElementById('giftSharedError');
+          submit.disabled=true;
+          status.textContent='';
+          try{
+            const existing=await eventRequest('own',{name:nameInput.value,token:browserToken()});
+            person=existing?{name:nameInput.value,messages:existing}:null;
+          }catch(failure){
+            status.textContent=failure.message;
+            return;
+          }finally{submit.disabled=false;}
+          if(!form.isConnected)return;
+        }
         author=nameInput.value;
-        const person=data.people.find(entry=>entry.name===author);
         editing=Boolean(person);
         originalAuthor=person?.name ?? null;
         target=person?.messages[0]?.target ?? '';
@@ -463,7 +688,7 @@ function adminPanel(){modal(`${header('Coordinación · Modo demostración','Her
 function manageTeachers(status='',focusId='teacherName'){
   const names=teacherNames();
   const options=names.map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');
-  modal(`${header('Docentes remotos','Los cambios se guardan en este navegador. Para publicarlos, descargá el JSON y reemplazá docentes.json en GitHub.')}
+  modal(`${header('Docentes remotos',shared?'Los cambios se aplican al padrón del encuentro.':'Los cambios se guardan en este navegador.')}
     <p><strong>${names.length}</strong> docentes en la lista</p>
     <form id="teacherAdd">
       <div class="field"><label for="teacherName">Nombre completo</label><input id="teacherName" required maxlength="120"></div>
@@ -479,6 +704,21 @@ function manageTeachers(status='',focusId='teacherName'){
     <div class="row"><button class="btn soft" id="teacherBack">Volver a Coordinación</button><button class="btn" id="teacherDownload">Descargar JSON</button></div>`);
   const input=document.getElementById('teacherName');
   document.getElementById(focusId)?.focus();
+
+  async function changeTeacher(name,active,button,focus){
+    button.disabled=true;
+    try{
+      if(shared){
+        await eventRequest('teacher',{name,active},coordinationCode);
+        connectionVersion++;
+        applySnapshot(await eventRequest('admin',{},coordinationCode));
+      }else updateTeacher(name,active);
+      if(button.isConnected)manageTeachers(name+(active?' se agregó a la lista.':' se quitó de la lista.'),focus);
+    }catch(failure){
+      const status=document.getElementById('teacherStatus');
+      if(button.isConnected)status.textContent=failure.message;
+    }finally{button.disabled=false;}
+  }
   document.getElementById('teacherAdd').onsubmit=event=>{
     event.preventDefault();
     const name=input.value.trim().normalize('NFC').replace(/\s+/g,' ');
@@ -487,18 +727,18 @@ function manageTeachers(status='',focusId='teacherName'){
       input.focus();
       return;
     }
-    updateTeacher(name,true);
-    manageTeachers(name+' se agregó a la lista.');
+    changeTeacher(name,true,event.currentTarget.querySelector('button'),'teacherName');
+
   };
   document.getElementById('teacherRemove').onsubmit=event=>{
     event.preventDefault();
     const name=document.getElementById('teacherSelect').value;
     if(name && confirm('¿Quitar a '+name+' de la lista de docentes?')){
-      updateTeacher(name,false);
-      manageTeachers(name+' se quitó de la lista.','teacherSelect');
+      changeTeacher(name,false,event.currentTarget.querySelector('button'),'teacherSelect');
+
     }
   };
-  document.getElementById('teacherBack').onclick=adminPanel;
+  document.getElementById('teacherBack').onclick=shared?sharedAdminPanel:adminPanel;
   document.getElementById('teacherDownload').onclick=()=>{
     const url=URL.createObjectURL(new Blob([JSON.stringify(teacherNames(),null,2)+'\n'],{type:'application/json'}));
     const link=document.createElement('a');
@@ -512,12 +752,12 @@ function seed(){const sentences=[['Gracias por tu escucha y la generosidad de co
 function exportCSV(){const rows=[['docente_registrado','categoria','destinatario','mensaje','firma_publica']];leafItems().forEach(m=>rows.push([m.anonymous?'(reservado)':m.author,m.cat,m.target||'',m.text,m.anonymous?'Anónimo':m.author]));const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='lo-que-sembramos-juntos-demo.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
 function reveal(){if(data.revealed){render();return;}const items=leafItems(),scene=document.getElementById('scene'),box=scene.getBoundingClientRect(),scaleX=box.width/1000,scaleY=box.height/600;const targets=[[738,120],[792,254],[750,389]];const flights=Math.min(items.length,54),animationPromises=[];for(let j=0;j<flights;j++){const item=items[j],p=pos(j,items.length),goal=targets[item.index],shape=document.createElement('div');shape.className='floating';shape.style.background=colors[item.index];shape.style.left=(box.left+p.x*scaleX)+'px';shape.style.top=(box.top+p.y*scaleY)+'px';document.body.appendChild(shape);const dx=(goal[0]-p.x)*scaleX,dy=(goal[1]-p.y)*scaleY;const anim=shape.animate([{transform:'translate(-50%,-50%) rotate(0deg)',opacity:.95},{transform:`translate(calc(-50% + ${dx*.48}px),calc(-50% + ${dy*.38-35}px)) rotate(140deg)`,opacity:.95,offset:.53},{transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) rotate(300deg) scale(.3)`,opacity:0}],{duration:1200+j*24,delay:j*16,easing:'ease-in-out',fill:'forwards'});animationPromises.push(anim.finished.catch(()=>{}).then(()=>shape.remove()));}data.revealed=true;save();if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.floating').forEach(n=>n.remove());}Promise.all(animationPromises).then(()=>{});}
 function activate(e,selector,cb){const el=e.target.closest(selector);if(!el)return;cb(el);}
-const teachersReady=loadPublishedTeachers();document.getElementById('giftBtn').onclick=async()=>{await teachersReady;gift();};document.getElementById('adminBtn').onclick=admin;
+const teachersReady=shared?Promise.resolve():loadPublishedTeachers();document.getElementById('giftBtn').onclick=async()=>{await teachersReady;gift();};document.getElementById('adminBtn').onclick=admin;
 document.getElementById('leaves').addEventListener('click',e=>activate(e,'.leaf',el=>readLeaf(el.dataset.id)));
 document.getElementById('leaves').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){activate(e,'.leaf',el=>readLeaf(el.dataset.id));e.preventDefault();}});
 document.getElementById('clouds').addEventListener('click',e=>activate(e,'.cloud-target',el=>cloud(el.dataset.cat)));
 document.getElementById('clouds').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){activate(e,'.cloud-target',el=>cloud(el.dataset.cat));e.preventDefault();}});
-document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});window.addEventListener('storage',e=>{if(e.key===KEY){data=load();render();}});render();
+if(shared)startShared();document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});window.addEventListener('storage',e=>{if(!shared&&e.key===KEY){data=load();render();}});render();
 })();
 </script>
 </body></html>
