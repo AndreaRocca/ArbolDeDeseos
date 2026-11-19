@@ -1,0 +1,465 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lo que sembramos juntos · Chicos.net</title>
+<style>
+:root{--paper:#f8f6ed;--ink:#344638;--muted:#617163;--green:#79a875;--gold:#d8a64c;--blue:#8db9d6;--dark:#345540;--shadow:0 16px 50px #35513d20}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;color:var(--ink);background:var(--paper)}button,input,select,textarea{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #2f748c;outline-offset:2px}.app{max-width:1300px;margin:auto;padding:18px 22px 35px}.top{display:flex;justify-content:space-between;align-items:center;gap:20px}.eyebrow{text-transform:uppercase;letter-spacing:.17em;font-size:.71rem;font-weight:750;color:#6a8b67}.top h1{font-family:Georgia,serif;font-size:clamp(1.9rem,4vw,3.1rem);margin:4px 0 0;font-weight:500}.subtitle{font-size:.95rem;color:var(--muted);margin:5px 0}.actions{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}.btn{border:0;border-radius:99px;padding:12px 18px;color:#fff;background:var(--dark);font-weight:650}.btn:hover{filter:brightness(1.07)}.btn.secondary{border:1px solid #b6c6b5;background:#fff;color:var(--dark)}.btn.soft{background:#e8efe4;color:var(--dark)}.btn:disabled{opacity:.45;cursor:not-allowed}.scene-shell{background:linear-gradient(180deg,#e5f1f2,#fcf5e9 75%);border-radius:26px;overflow:hidden;border:1px solid #d7dfd4;box-shadow:var(--shadow);position:relative}.scene{display:block;width:100%;height:auto;min-height:375px}.counter{position:absolute;top:16px;left:17px;z-index:2;border:1px solid #d3dfd7;background:#ffffffdb;backdrop-filter:blur(8px);border-radius:15px;padding:10px 13px;font-size:.81rem}.counter b{font-size:1.14rem}.hint{position:absolute;bottom:15px;left:16px;font-size:.78rem;background:#ffffffd6;border-radius:12px;padding:9px 11px;color:#536555;max-width:75%}.legend{display:flex;flex-wrap:wrap;gap:18px;align-items:center;padding:15px 2px 6px;color:#576b5c;font-size:.88rem}.dot{width:12px;height:12px;border-radius:100%;display:inline-block;margin-right:7px;vertical-align:middle}.about{font-size:.85rem;color:#647466}.leaf{cursor:pointer;transition:filter .2s}.leaf:hover{filter:brightness(1.12) drop-shadow(0 2px 2px #3c513966)}.leaf ellipse{stroke:#f4f6eb;stroke-width:1.6}.leaf:focus{outline:none;filter:drop-shadow(0 0 4px #264a55)}.leaf:focus ellipse{stroke:#254d5e;stroke-width:3}.cloud-target{cursor:pointer;transition:transform .15s;transform-box:fill-box;transform-origin:center}.cloud-target:hover{transform:scale(1.04)}.cloud-target:focus{outline:3px solid #3e6273}.cloud-panel{display:none}.revealed .cloud-panel{display:block}.cloud-words{pointer-events:none}.cloud-label{font-family:Georgia,serif;font-size:14px;fill:#345240}.cloud-small{font-size:12px;fill:#486a5e}.trunk{fill:none;stroke:#926d4b;stroke-linecap:round}.dialog-backdrop{position:fixed;inset:0;background:#152c24a6;z-index:30;display:flex;align-items:center;justify-content:center;padding:18px}.dialog{background:#fffef9;border-radius:22px;box-shadow:0 25px 90px #0003;width:min(620px,100%);max-height:90vh;overflow:auto;padding:25px}.dialog.large{width:min(780px,100%)}.dialog-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.dialog h2{font-family:Georgia,serif;font-weight:500;font-size:1.65rem;margin:0 0 6px}.x{border:none;background:#eaf0e9;border-radius:100%;width:34px;height:34px;font-size:20px;color:#33543d;flex-shrink:0}.field{display:flex;flex-direction:column;gap:7px;margin:14px 0}.field label{font-weight:680;font-size:.88rem}.field input,.field textarea,.field select{padding:11px 12px;border-radius:11px;border:1px solid #b7c5b8;background:white;width:100%;color:#2e4535}.field textarea{resize:vertical;min-height:76px}.leaf-card{padding:13px 14px;border:1px solid #dce5dc;border-radius:14px;margin:15px 0}.leaf-card h3{font-size:1rem;margin:0 0 8px}.checkbox{display:flex;gap:9px;align-items:center;font-size:.87rem}.checkbox input{width:18px;height:18px}.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.note{color:#66766a;font-size:.82rem;line-height:1.5}.bad{color:#a83131;font-size:.9rem;min-height:1.3em}.message{line-height:1.6;white-space:pre-wrap;font-size:1.09rem}.who{color:#758373;font-size:.83rem}.listmsgs{max-height:48vh;overflow:auto;margin-top:12px}.msgitem{border-bottom:1px solid #e5e9e1;padding:12px 4px}.msgitem:last-child{border:0}.wordcloud{display:block;width:100%;height:auto}.tabs{display:flex;gap:8px;margin:16px 0}.tabs button{padding:9px 13px;border:1px solid #cad9ca;border-radius:99px;background:#fff;color:#385843}.tabs button[aria-selected=true]{background:#385843;color:white}.footer{text-align:center;padding-top:20px;font-size:.81rem;color:#7d8d80}.demo-banner{margin:10px 0 13px;padding:10px 13px;border-radius:12px;background:#fff5d8;color:#775a1d;font-size:.84rem}.admin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.admin-grid .btn{border-radius:12px}.floating{position:fixed;pointer-events:none;z-index:50;width:16px;height:11px;border-radius:100% 0 100% 0;transform:translate(-50%,-50%)}[hidden]{display:none!important}@media(max-width:700px){.app{padding:13px}.top{align-items:flex-start;flex-direction:column}.actions{justify-content:flex-start}.scene{min-height:320px}.counter{font-size:.7rem}.hint{font-size:.68rem}.dialog{padding:18px}.admin-grid{grid-template-columns:1fr}}
+.gift-dialog{width:min(660px,100%);max-height:calc(100dvh - 36px);padding:clamp(20px,5vw,36px);background:#fffdf5}
+.gift-compose h2{font-size:clamp(1.7rem,5vw,2.55rem);line-height:1.12;color:#2c4635}
+.gift-progress,.gift-progress>span:first-child{display:flex;align-items:center;gap:9px}
+.gift-progress{margin-bottom:16px;color:#526754;font-size:.875rem}
+.gift-leaf{display:inline-block;flex:none;width:20px;height:13px;border-radius:100% 0 100% 0;background:var(--tone);transform:rotate(-19deg)}
+.gift-leaf.current{outline:2px solid #46624d;outline-offset:3px}
+.gift-intro{margin:10px 0 20px;line-height:1.55;color:#465c4b}
+.gift-compose label{font-size:.9rem;font-weight:650}
+.gift-paper{padding:clamp(14px,4vw,22px);border:1px solid #d8dfd2;border-radius:5px 20px 20px 20px;background:#fffdf5;background:linear-gradient(145deg,color-mix(in srgb,var(--tone) 22%,#fffdf5),#fffdf5 88%)}
+.gift-paper .field{margin-top:0}
+.gift-paper textarea{display:block;width:100%;min-height:7.5rem;resize:vertical;margin:7px 0 12px;padding:11px 13px;font:1.13rem/1.5 Georgia,serif;color:#2e4535;border:1px solid #b8c5b6;border-radius:9px;background:#ffffffb8}
+.gift-paper textarea::placeholder{color:#59695b}
+.gift-line{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 14px}
+.gift-line .checkbox{min-height:36px;font-weight:500}
+.gift-line input{accent-color:var(--dark)}
+.gift-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:20px}
+.gift-review{display:grid;gap:9px}
+.gift-review .gift-paper{padding:10px 15px}
+.gift-review h3{display:flex;align-items:center;gap:10px;margin:0;font-size:.95rem}
+.gift-review p{margin:4px 0}
+.gift-quote{font:1.08rem/1.4 Georgia,serif;white-space:pre-wrap;overflow-wrap:anywhere}
+.gift-edit{min-height:36px;border:0;border-radius:6px;padding:4px 8px;background:transparent;color:var(--dark);text-decoration:underline;font-weight:650}
+.gift-edit:hover{background:#ffffffb8}
+@media(max-width:420px){.gift-actions>.btn[type=submit]{flex:1}}
+</style>
+</head>
+<body>
+<main class="app">
+  <header class="top"><div><div class="eyebrow">Chicos.net · Cierre de año</div><h1>Lo que sembramos juntos</h1><p class="subtitle">Un árbol que crece con nuestras palabras.</p></div><div class="actions"><button class="btn" id="giftBtn">🌿 Regalar unas palabras</button><button class="btn secondary" id="adminBtn">⚙ Coordinación</button></div></header>
+  <div class="demo-banner">PROTOTIPO LOCAL: guardado en este navegador. No sincroniza docentes remotos ni protege realmente la clave. Para el evento habrá que conectar una base de datos y autenticación.</div>
+  <section class="scene-shell" aria-label="Árbol interactivo de dedicatorias"><div class="counter"><b id="peopleCount">0</b> participantes · <b id="leafCount">0</b> hojas</div>
+    <svg id="scene" class="scene" viewBox="0 0 1000 600" role="img" aria-label="Árbol con hojas interactivas y nubes de mensajes"><defs>
+      <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#d9eff2"/><stop offset="1" stop-color="#fdf3df"/></linearGradient><linearGradient id="treebark" x1="0%" y1="0%" x2="100%" y2="0%"><stop stop-color="#342c24"/><stop offset=".54" stop-color="#514131"/><stop offset="1" stop-color="#302821"/></linearGradient>
+    </defs>
+    <rect width="1000" height="600" fill="url(#sky)"/><circle cx="895" cy="88" r="43" fill="#fff2c5" opacity=".8"/>
+    <path d="M0 511Q170 445 331 503Q510 459 660 503Q840 461 1000 495V600H0Z" fill="#d8e5c6"/><path d="M0 550Q260 510 435 543Q710 495 1000 548V600H0Z" fill="#c1d6ab"/>
+    <g id="tree" transform="translate(0 0)">
+      <g id="foliage" opacity=".28"><ellipse cx="397" cy="251" rx="211" ry="161" fill="#b9d6ab"/><ellipse cx="478" cy="264" rx="163" ry="134" fill="#afd09e"/><ellipse cx="316" cy="273" rx="142" ry="123" fill="#b9dca9"/></g>
+      <g aria-hidden="true">
+        <ellipse cx="407" cy="527" rx="135" ry="10" fill="#40583a" opacity=".17"/>
+        <g fill="none" stroke="#473a2b" stroke-linecap="round">
+          <path stroke-width="6" d="M303 353C271 345 234 360 214 339C205 330 204 318 211 312M321 320C278 317 268 288 238 282C217 277 200 292 188 276M286 301C253 287 270 257 245 240M330 286C308 264 324 234 306 213C298 204 285 203 280 188M369 257C340 244 358 210 338 191C327 182 319 170 322 155M397 242C396 214 373 197 381 174C385 161 397 149 391 134"/>
+          <path stroke-width="6" d="M502 348C534 343 559 362 584 338C593 329 597 318 591 309M477 315C514 315 529 285 553 280C573 275 590 286 605 269M527 298C555 280 539 254 562 236M473 285C493 262 481 238 498 217C510 203 523 207 532 189M453 254C478 238 457 210 475 190C484 180 498 174 498 157M422 238C422 215 444 198 439 175C435 155 423 152 428 132"/>
+          <path stroke-width="4" d="M256 348C239 364 222 374 204 366M270 286C244 271 225 274 212 254M307 216C287 222 271 211 264 200M345 203C356 186 354 165 349 150M555 349C568 365 589 375 604 364M549 281C575 268 589 270 600 252M495 223C514 227 536 216 544 205M471 200C458 184 457 165 464 149"/>
+        </g>
+        <path fill="url(#treebark)" d="
+          M268 526C332 523 366 503 380 467C389 445 392 418 388 396
+          C379 368 346 350 322 355C289 362 285 399 254 401C233 403 214 391 207 374
+          C224 394 250 397 266 384C284 369 292 344 319 342C344 339 369 351 389 370
+          C372 331 343 317 305 319C255 322 219 317 202 286C231 316 269 307 302 307
+          C336 306 365 311 390 341C382 312 371 295 343 280C307 260 280 249 275 214
+          C290 245 316 253 350 267C366 275 379 285 389 300C382 279 361 265 354 243
+          C347 221 365 201 357 181C373 205 359 226 365 240C372 258 388 270 397 284
+          C396 261 398 240 384 224C363 200 368 180 370 162C373 190 377 204 394 220
+          C402 229 405 241 408 250C414 226 420 222 434 207C446 192 452 177 449 159
+          C460 181 454 202 440 218C424 236 418 258 419 283C434 263 448 253 452 234
+          C456 216 442 198 459 178C451 198 466 212 463 236C460 260 436 276 427 300
+          C440 283 456 274 476 267C514 254 536 244 547 215C545 250 516 263 482 280
+          C453 294 434 315 427 340C449 316 478 305 513 308C552 311 582 309 605 280
+          C596 313 561 324 514 320C475 318 442 340 429 367C451 349 475 338 500 341
+          C529 344 533 369 552 382C570 394 592 389 605 371C597 395 571 402 551 397
+          C522 391 517 358 495 354C469 350 442 368 431 392C420 417 424 447 434 472
+          C449 509 484 521 546 526C489 530 451 527 407 527C361 527 320 531 268 526Z"/>
+        <g fill="none" stroke="#b49460" stroke-linecap="round">
+          <path stroke-width="3" opacity=".75" d="M324 523C387 515 404 463 402 410C401 376 401 337 405 298"/>
+          <path stroke-width="2" opacity=".7" d="M366 526C413 501 416 451 414 421C410 382 411 348 418 326M474 522C436 511 425 484 421 457M376 355C353 330 333 326 310 327M441 323C459 303 480 293 505 284"/>
+        </g>
+      </g>
+      <g id="leaves"></g>
+    </g>
+    <g id="clouds" class="cloud-panel">
+      <g transform="translate(562 20)"><g class="cloud-target" data-cat="personal" tabindex="0" role="button" aria-label="Abrir nube: 🍃 Hoja 1 - Para un compañero/a">
+        <svg width="246" height="137" viewBox="0 0 540 300" aria-hidden="true"><g id="cloudPreview0"></g></svg>
+        <text x="123" y="147" text-anchor="middle" class="cloud-label">Para un compañero/a</text>
+      </g></g>
+      <g transform="translate(746 136)"><g class="cloud-target" data-cat="equipo" tabindex="0" role="button" aria-label="Abrir nube: 🍃 Hoja 2 - Para el grupo de DRs">
+        <svg width="246" height="137" viewBox="0 0 540 300" aria-hidden="true"><g id="cloudPreview1"></g></svg>
+        <text x="123" y="147" text-anchor="middle" class="cloud-label">Para el grupo de DRs</text>
+      </g></g>
+      <g transform="translate(593 254)"><g class="cloud-target" data-cat="organizacion" tabindex="0" role="button" aria-label="Abrir nube: 🍃 Hoja 3 - Para equipo coordinación">
+        <svg width="246" height="137" viewBox="0 0 540 300" aria-hidden="true"><g id="cloudPreview2"></g></svg>
+        <text x="123" y="147" text-anchor="middle" class="cloud-label">Para equipo coordinación</text>
+      </g></g>
+    </g>
+    <g transform="translate(104 520)" fill="#75a16d"><path d="M0 30Q-10-7-22-21Q-5-10 0 5Q12-30 26-35Q8-14 5 13Q30-2 49 0Q19 7 5 30Z"/><path d="M690 18q-4-24-18-33q7 23 9 33q12-23 24-32q-9 23-9 32Z"/></g>
+    </svg>
+    <div class="hint" id="sceneHint">Tocá una hoja para leer su mensaje. El árbol empieza a crecer con la primera participación.</div>
+  </section>
+  <nav class="legend" aria-label="Categorías"><span><i class="dot" style="background:var(--green)"></i>🍃 Hoja 1 - Para un compañero/a</span><span><i class="dot" style="background:var(--gold)"></i>🍃 Hoja 2 - Para el grupo de DRs</span><span><i class="dot" style="background:var(--blue)"></i>🍃 Hoja 3 - Para equipo coordinación</span><span class="about">Sin rankings: cada hoja cuenta.</span></nav>
+  <div class="footer">Prototipo de prueba · Chicos.net · 2026</div>
+</main>
+<div id="modalRoot"></div>
+<script>
+(()=>{'use strict';
+const KEY='chicosnet-arbol-prototipo-v1',DEMO_KEY='FINDE2026A#O',cats=['personal','equipo','organizacion'],catNames=['🍃 Hoja 1 - Para un compañero/a','🍃 Hoja 2 - Para el grupo de DRs','🍃 Hoja 3 - Para equipo coordinación'],colors=['#79a875','#d8a64c','#8db9d6'];
+const initialTeachers=[
+  "Alejandra Sayago",
+  "Ana Carolina Moreno",
+  "Andrea Balsamello",
+  "Andrea Vicente",
+  "Angela Cecilia Russo",
+  "Ariel Bauchiero",
+  "Agustin Marconi",
+  "Cinthia Masciovecchio",
+  "Cristian Garcia",
+  "Daniel Arellano",
+  "Daniel Gorriti",
+  "Eliana Candido",
+  "Ester N Diaz",
+  "Evangelina Jadil",
+  "Eunice Rozkiewicz",
+  "Gabriel Angel Crespo",
+  "Gabriela Martinez del Sel",
+  "Gabriela Perez",
+  "Gandhi Lennin Hernandez Fontes",
+  "Hugo Rojas",
+  "Ines del Castillo",
+  "José Eligio Leiva",
+  "Julio César Dip",
+  "Karina Valdetari",
+  "Kellysa Hernandez",
+  "Laura Suarez",
+  "Leonardo Torrilla",
+  "Lourdes Celis",
+  "Lucia Brunand",
+  "Luis Amarilla",
+  "Marcela Tejeda",
+  "Maria Laura Castillo",
+  "Mariela del Valle Trejo",
+  "Mariela Humofe",
+  "Mary Matassi",
+  "Matías Montes",
+  "Maximiliano Gauthier",
+  "Mirta Edith Gaspari",
+  "Monica Ferro",
+  "Nadia Mir",
+  "Paula Revainera",
+  "Pedro Oliva",
+  "Priscila Cabrera",
+  "Rocio Conesa",
+  "Rodrigo Etchenique",
+  "Romina Bitencort",
+  "Rosario Puzzo",
+  "Silvina Regalia",
+  "Sofía Juarez",
+  "Sofia Luppino",
+  "Solange Milesi",
+  "Soledad Gomez",
+  "Stephanie Bryner",
+  "Susana Zurita",
+  "Teresita Musi",
+  "Tomas Gimeno Rossi"
+];
+const teacherChangesKey=KEY+'-teachers';
+let baseTeachers=initialTeachers;
+function readTeacherChanges(){
+  try{
+    const changes=JSON.parse(localStorage.getItem(teacherChangesKey));
+    if(Array.isArray(changes?.added) && Array.isArray(changes?.removed))return changes;
+  }catch(error){}
+  return {added:[],removed:[]};
+}
+function teacherNames(){
+  const {added,removed}=readTeacherChanges();
+  return [...new Set([...baseTeachers,...added])].filter(name=>!removed.includes(name))
+    .sort((a,b)=>a.localeCompare(b,'es'));
+}
+function updateTeacher(name,include){
+  const changes=readTeacherChanges();
+  changes.added=changes.added.filter(entry=>entry!==name);
+  changes.removed=changes.removed.filter(entry=>entry!==name);
+  if(include && !baseTeachers.includes(name))changes.added.push(name);
+  if(!include && baseTeachers.includes(name))changes.removed.push(name);
+  localStorage.setItem(teacherChangesKey,JSON.stringify(changes));
+}
+async function loadPublishedTeachers(){
+  if(!['http:','https:'].includes(location.protocol))return;
+  try{
+    const response=await fetch('./docentes.json',{cache:'no-cache'});
+    if(!response.ok)return;
+    const names=await response.json();
+    if(Array.isArray(names) && names.every(name=>typeof name==='string' && name.trim())){
+      baseTeachers=names.map(name=>name.trim().normalize('NFC'));
+    }
+  }catch(error){}
+}
+let data=load(), currentTab='words', selectedCategory='personal';
+function load(){try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&Array.isArray(s.people))return s;}catch(e){}return {people:[],revealed:false};}
+function save(){localStorage.setItem(KEY,JSON.stringify(data));render();}
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function leafItems(){return data.people.flatMap(p=>p.messages.map((m,i)=>({...m,cat:cats[i],index:i,id:p.id+':'+i,author:p.name,personId:p.id})));}
+function pos(i,total){const golden=2.399963229728653;const t=(i+.5)/Math.max(total,1),r=Math.sqrt(t),a=i*golden;return {x:398+205*r*Math.cos(a),y:259+152*r*Math.sin(a)};}
+function render(){document.getElementById('peopleCount').textContent=data.people.length;const items=leafItems();document.getElementById('leafCount').textContent=items.length;const leafRoot=document.getElementById('leaves');leafRoot.innerHTML=items.map((m,i)=>{const p=pos(i,Math.max(items.length,1)),angle=(i*89)%180-90;return `<g class="leaf" data-id="${esc(m.id)}" role="button" tabindex="0" aria-label="Leer hoja: ${esc(catNames[m.index])}" transform="translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) rotate(${angle})"><ellipse cx="0" cy="0" rx="${items.length>110?10:items.length>60?12:15}" ry="${items.length>110?6:items.length>60?7:9}" fill="${colors[m.index]}"></ellipse><path d="M-6 0H7" stroke="#fff" opacity=".6" stroke-width=".9"/></g>`;}).join('');document.getElementById('scene').classList.toggle('revealed',!!data.revealed);document.getElementById('sceneHint').textContent=data.revealed?'Tocá una nube para ver palabras destacadas y mensajes completos. Las hojas siguen disponibles.':'Tocá una hoja para leer su mensaje. Cada docente aporta tres hojas.';if(data.revealed) cats.forEach((c,i)=>{
+  const words=topWords(items.filter(m=>m.cat===c).map(m=>m.text),16);
+  document.getElementById('cloudPreview'+i).innerHTML=wordCloudArt(words,i).markup;
+});}
+function topWords(texts,max=30){const stop=new Set('para como cada esto esta este estos estas unos unas sobre entre desde hasta donde cuando pero porque aunque también todos todas todo toda unos unas mucha mucho muchos muchas algo alguien nuestro nuestra nuestros nuestras ustedes ellos ellas aquí allí ahí año años fue eran ser estar hemos hacer sido muy más menos una uno los las del al con por que quien quienes cual cuales sus mis tus tu su mi te se le les nos es son en de el la lo y o a e un ya no si tan qué qué'.split(' '));const counts=new Map();texts.join(' ').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').match(/[a-zñü]{4,}/g)?.forEach(w=>{if(!stop.has(w))counts.set(w,(counts.get(w)||0)+1)});return [...counts.entries()].sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0])).slice(0,max);}
+function modal(html,large=false){const root=document.getElementById('modalRoot');root.innerHTML=`<div class="dialog-backdrop" id="backdrop"><section class="dialog ${large?'large':''}" role="dialog" aria-modal="true" aria-label="Ventana del árbol">${html}</section></div>`;document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',close));root.querySelector('#backdrop').addEventListener('click',e=>{if(e.target.id==='backdrop')close();});root.querySelector('input,select,button')?.focus();}
+function close(){document.getElementById('modalRoot').innerHTML='';}
+function header(t,sub=''){return `<div class="dialog-head"><div><h2>${t}</h2>${sub?`<div class="note">${sub}</div>`:''}</div><button class="x" data-close aria-label="Cerrar">×</button></div>`;}
+function gift(){
+  const names=teacherNames();
+  const options=names.map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');
+  const prompts=[
+    ['Para alguien que te acompañó','Pensá en un gesto que te haya hecho sentir en compañía. ¿Qué le dirías hoy?','Me acuerdo de aquella vez que…'],
+    ['Para el grupo de DRs','Volvé a un momento que compartieron este año. ¿Qué te gustaría guardar de ese día?','Algo que me llevo de este grupo es…'],
+    ['Para el equipo de coordinación','Pensá en algo que el equipo hizo posible este año. ¿Qué te gustaría contarles?','Gracias por hacer lugar para…']
+  ];
+  const leaf=(index,active=false)=>`<i class="gift-leaf ${active?'current':''}" style="--tone:${colors[index]}" aria-hidden="true"></i>`;
+  let step=-1, returnToReview=false, author='', target='', editing=false;
+  let notes=prompts.map(()=>({text:'',anonymous:false}));
+
+  function show(){
+    const review=step===prompts.length;
+    const prompt=prompts[step];
+    const title=prompt?.[0] ?? (review?'Tus tres hojas':'Hay palabras que vale la pena compartir');
+    let content, action;
+    if(step<0){
+      content=`<p class="gift-intro">Regalá unas palabras a quienes compartieron el año con vos. Cada dedicatoria se va a convertir en una hoja del árbol.</p>
+        <div class="field"><label for="giftName">¿Quién escribe?</label><select id="giftName" required><option value="">Elegí tu nombre</option>${options}</select></div>
+        <p class="note">Si ya regalaste tus hojas, elegí tu nombre para volver a encontrarlas.</p>`;
+      action='Empezar';
+    }else if(prompt){
+      const note=notes[step];
+      content=`<p class="gift-intro">${prompt[1]}</p><div class="gift-paper" style="--tone:${colors[step]}">
+        ${step===0?`<div class="field"><label for="giftTarget">¿A quién le regalás esta hoja?</label><select id="giftTarget" required><option value="">Elegí a alguien</option>${options}</select></div>`:''}
+        <label for="giftText">Tu dedicatoria</label>
+        <textarea id="giftText" required maxlength="600" aria-describedby="giftLimit" placeholder="${prompt[2]}"></textarea>
+        <div class="gift-line"><label class="checkbox"><input id="giftAnonymous" type="checkbox" ${note.anonymous?'checked':''}> Dejar esta hoja sin firma</label><span class="note" id="giftLimit">${note.text.length} / 600</span></div>
+        </div>`;
+      action=returnToReview?'Volver a mis tres hojas':step===2?'Releer mis hojas':'Siguiente hoja';
+    }else{
+      content=`<p class="gift-intro">Releé tus dedicatorias. Cuando estén listas, las tres se van a sumar juntas al árbol.</p>
+        <div class="gift-review">${notes.map((note,index)=>`<article class="gift-paper" style="--tone:${colors[index]}">
+          <div class="gift-line"><h3>${leaf(index)}${index===0?'Para '+esc(target):prompts[index][0]}</h3>
+          <button type="button" class="gift-edit" data-edit-leaf="${index}" aria-label="Editar hoja ${index+1}">Editar</button></div>
+          <p class="gift-quote">${esc(note.text.trim())}</p><p class="note">${note.anonymous?'Sin firma':'De '+esc(author)}</p></article>`).join('')}</div>`;
+      action=editing?'Guardar mis hojas':'Sumar mis hojas al árbol';
+    }
+    modal(`<div class="gift-compose"><div class="gift-progress"><span>${colors.map((_,index)=>leaf(index,index===step)).join('')}</span>${prompt?`<span>Hoja ${step+1} de 3</span>`:''}</div>
+      ${header(title)}<form id="giftForm">${content}<div class="gift-actions">
+        ${step>=0&&!returnToReview?'<button type="button" class="btn soft" id="giftBack">Volver</button>':''}
+        <button class="btn" type="submit">${action}</button></div></form></div>`);
+    const dialog=document.querySelector('#modalRoot .dialog');
+    dialog.classList.add('gift-dialog');
+    const heading=dialog.querySelector('h2');
+    heading.id='giftTitle';
+    heading.tabIndex=-1;
+    dialog.removeAttribute('aria-label');
+    dialog.setAttribute('aria-labelledby',heading.id);
+    heading.focus();
+    const form=document.getElementById('giftForm');
+    const nameInput=document.getElementById('giftName');
+    const targetInput=document.getElementById('giftTarget');
+    const textInput=document.getElementById('giftText');
+    if(nameInput)nameInput.value=author;
+    if(targetInput)targetInput.value=target;
+    if(textInput){
+      textInput.value=notes[step].text;
+      textInput.addEventListener('input',()=>{
+        textInput.setCustomValidity('');
+        document.getElementById('giftLimit').textContent=textInput.value.length+' / 600';
+      });
+    }
+    function remember(){
+      if(!textInput)return;
+      notes[step]={text:textInput.value,anonymous:document.getElementById('giftAnonymous').checked};
+      if(targetInput)target=targetInput.value;
+    }
+    document.getElementById('giftBack')?.addEventListener('click',()=>{
+      remember();
+      step--;
+      show();
+    });
+    form.querySelectorAll('[data-edit-leaf]').forEach(button=>button.addEventListener('click',()=>{
+      step=Number(button.dataset.editLeaf);
+      returnToReview=true;
+      show();
+    }));
+    form.addEventListener('submit',event=>{
+      event.preventDefault();
+      if(review){
+        const messages=notes.map((note,index)=>({...note,text:note.text.trim(),target:index===0?target:null}));
+        const person=data.people.find(entry=>entry.name===author);
+        if(person)person.messages=messages;
+        else data.people.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),name:author,messages});
+        save();
+        modal(`<div class="gift-compose"><div class="gift-progress"><span>${colors.map((_,index)=>leaf(index)).join('')}</span></div>
+          ${header(editing?'Tus hojas quedaron actualizadas':'Tus hojas ya son parte del árbol')}
+          <p class="gift-intro">${editing?'Podés volver al árbol para leerlas.':'Gracias por poner en palabras algo de lo que compartimos este año.'}</p>
+          <button class="btn" data-close>Volver al árbol</button></div>`);
+        document.querySelector('.gift-compose .btn').focus();
+        return;
+      }
+      if(nameInput && nameInput.value!==author){
+        author=nameInput.value;
+        const person=data.people.find(entry=>entry.name===author);
+        editing=Boolean(person);
+        target=person?.messages[0]?.target ?? '';
+        notes=prompts.map((_,index)=>({
+          text:person?.messages[index]?.text ?? '',
+          anonymous:person?.messages[index]?.anonymous ?? false
+        }));
+      }
+      if(textInput && !textInput.value.trim()){
+        textInput.setCustomValidity('Escribí unas palabras para esta hoja.');
+        textInput.reportValidity();
+        return;
+      }
+      remember();
+      step=returnToReview?prompts.length:step+1;
+      returnToReview=false;
+      show();
+    });
+  }
+  show();
+}
+function readLeaf(id){const m=leafItems().find(m=>m.id===id);if(!m)return;modal(`${header(catNames[m.index])}${m.index===0?`<p class="who"><b>Para:</b> ${esc(m.target)}</p>`:''}<p class="message">“${esc(m.text)}”</p><p class="who">${m.anonymous?'Una hoja anónima':'De '+esc(m.author)}</p><button class="btn soft" data-close>Volver al árbol</button>`);}
+function cloud(cat){selectedCategory=cat;currentTab='words';drawCloud();}
+function wordCloudArt(words, category){
+  const palettes=[
+    ['#214e36','#39704b','#567836','#2c6856'],
+    ['#80500a','#9a5a21','#784321','#896222'],
+    ['#23537c','#276780','#334c86','#326678']
+  ];
+  const fills=['#eff8ed','#fff7e5','#eef8ff'];
+  const strokes=['#adcea8','#d8bd82','#a6cade'];
+  const skyShape='<path d="M89 269C36 269 11 240 18 202C23 166 57 143 95 147C99 109 130 84 170 84C186 84 200 89 212 97C223 54 255 26 300 27C346 27 379 54 386 93C430 83 467 107 478 143C504 152 524 173 527 204C533 242 504 269 460 269Z" fill="'+fills[category]+'" stroke="'+strokes[category]+'" stroke-width="2"/>';
+  const context=document.createElement('canvas').getContext('2d');
+  const max=words[0]?.[1] || 1;
+  const min=words.at(-1)?.[1] || 1;
+  const points=Array.from({length:750},(_,i)=>{
+    const radius=8*Math.sqrt(i), angle=i*2.399963;
+    return {x:270+Math.cos(angle)*radius,y:170+Math.sin(angle)*radius*.52};
+  });
+  const placed=[], unplaced=[];
+  const rotations=[0,-90,0,90,0,0,90,0];
+  const density=Math.min(1,Math.sqrt(8/Math.max(1,words.length)));
+
+  for(const factor of [1,.78,.57]){
+  placed.length=0;
+  unplaced.length=0;
+    for(const [i,[word,count]] of words.entries()){
+      const emphasis=max===min?0:Math.sqrt((count-min)/(max-min));
+      const base=(18+(words.length===1?15:37*emphasis))*density;
+      const weight=i===0 || emphasis>.6?700:600;
+      const preferred=rotations[i%rotations.length];
+      let item;
+      for(const scale of [1,.83,.67,.5]){
+        const size=Math.max(9,Math.round(base*scale*factor));
+        context.font=weight+' '+size+'px Arial';
+        const measured=context.measureText(word).width;
+        const length=Math.min(344,measured);
+        for(const angle of [preferred,preferred===0?90:0]){
+          const w=(angle?size*1.16:length)/2+2;
+          const h=(angle?length:size*1.16)/2+2;
+          const point=points.find(({x,y})=>{
+            const edges=[y-h,y+h];
+            const inside=edges.every(y=>[x-w,x+w].every(x=>
+              ((x-270)/231)**2+((y-173)/96)**2<=1 &&
+              (y>=134 || x>=131) && (y>=105 || (x>=218 && x<=371))
+            ));
+            return inside && placed.every(p=>Math.abs(p.x-x)>=p.w+w || Math.abs(p.y-y)>=p.h+h);
+          });
+          if(point){item={...point,w,h,angle,size,weight,length,measured,word,count,color:palettes[category][i%4]};break;}
+        }
+        if(item) break;
+      }
+      if(item) placed.push(item);
+      else unplaced.push([word,count]);
+    }
+    if(!unplaced.length) break;
+  }
+  const glyphs=placed.map(({x,y,angle,size,weight,length,measured,word,count,color})=>{
+    const rotation=angle?' transform="rotate('+angle+' '+x+' '+y+')"':'';
+    const fit=length<measured?' textLength="'+length+'" lengthAdjust="spacingAndGlyphs"':'';
+    return '<text x="'+x+'" y="'+y+'" fill="'+color+'" font-size="'+size+'" font-weight="'+weight+'"'+rotation+fit+'><title>'+esc(word)+' ('+count+')</title>'+esc(word)+'</text>';
+  }).join('');
+  const empty=words.length?'':'<text x="270" y="178" font-size="25">Sin mensajes todav&#237;a</text>';
+  return {
+    markup:skyShape+'<g fill="'+palettes[category][0]+'" font-family="Arial,sans-serif" text-anchor="middle" dominant-baseline="central">'+glyphs+empty+'</g>',
+    unplaced
+  };
+}
+
+function renderWordCloud(area, words, category){
+  const {markup,unplaced}=wordCloudArt(words,category);
+  const label=words.map(([word,count])=>word+' ('+count+')').join(', ');
+  area.innerHTML='<svg class="wordcloud" viewBox="0 0 540 300" role="img" aria-label="Palabras destacadas. '+esc(label)+'">'+
+    '<title>'+esc(label)+'</title>'+markup+'</svg>';
+  if(unplaced.length){
+    area.insertAdjacentHTML('beforeend','<p class="note">'+unplaced.map(([word,count])=>esc(word)+' ('+count+')').join(' &middot; ')+'</p>');
+  }
+}
+function drawCloud(){const i=cats.indexOf(selectedCategory),msgs=leafItems().filter(m=>m.cat===selectedCategory),words=topWords(msgs.map(m=>m.text),32);modal(`${header('Nube · '+catNames[i],msgs.length+' mensajes en esta categoría')}<div class="tabs"><button id="tabWords" aria-selected="${currentTab==='words'}">Palabras destacadas</button><button id="tabMessages" aria-selected="${currentTab==='messages'}">Mensajes completos</button></div><div id="cloudContent"></div>`,true);const area=document.getElementById('cloudContent');if(currentTab==='words'){if(words.length){renderWordCloud(area,words,i);}else{area.innerHTML='<p>Todavía no hay palabras en esta nube.</p>';}}else{area.innerHTML=msgs.length?`<div class="listmsgs">${msgs.map(m=>`<div class="msgitem"><div class="message">“${esc(m.text)}”</div><div class="who">${m.index===0?'Para '+esc(m.target)+' · ':''}${m.anonymous?'Anónimo':'De '+esc(m.author)}</div></div>`).join('')}</div>`:'<p>Esta nube todavía espera sus primeras hojas.</p>';}document.getElementById('tabWords').onclick=()=>{currentTab='words';drawCloud();};document.getElementById('tabMessages').onclick=()=>{currentTab='messages';drawCloud();};}
+function admin(){modal(`${header('Panel de coordinación','Ingresá la clave de demostración para abrir el panel.')}<div class="field"><label for="adminPass">Clave de prueba</label><input id="adminPass" type="password" autocomplete="off" placeholder="Clave"></div><p class="bad" id="adminError" role="alert"></p><button class="btn" id="unlock">Entrar</button>`);document.getElementById('unlock').onclick=()=>{if(document.getElementById('adminPass').value!==DEMO_KEY){document.getElementById('adminError').textContent='Clave incorrecta';return;}adminPanel();};}
+function adminPanel(){modal(`${header('Coordinación · Modo demostración','Herramientas para probar el cierre del encuentro.')}<p><b>${data.people.length}</b> participantes · <b>${leafItems().length}</b> hojas · Revelación: <b>${data.revealed?'activada':'pendiente'}</b></p><div class="admin-grid"><button class="btn soft" id="manageTeachers">Gestionar docentes</button><button class="btn" id="reveal">✨ Revelar las tres nubes</button><button class="btn secondary" id="hide">Ocultar las nubes</button><button class="btn soft" id="sample">Agregar 12 participaciones de ejemplo</button><button class="btn secondary" id="export">Exportar mensajes CSV</button><button class="btn secondary" id="reset">Borrar datos de esta demo</button></div><p class="note">Esta versión almacena los datos únicamente en este navegador. La clave visible en el código es exclusivamente para probar el prototipo.</p>`,true);document.getElementById('manageTeachers').onclick=async()=>{await teachersReady;manageTeachers();};document.getElementById('reveal').onclick=()=>{close();reveal();};document.getElementById('hide').onclick=()=>{data.revealed=false;save();close();};document.getElementById('sample').onclick=()=>{seed();save();adminPanel();};document.getElementById('export').onclick=exportCSV;document.getElementById('reset').onclick=()=>{if(confirm('¿Borrar todas las participaciones de prueba guardadas en ESTE navegador?')){data={people:[],revealed:false};save();close();}};}
+function manageTeachers(status='',focusId='teacherName'){
+  const names=teacherNames();
+  const options=names.map(name=>`<option value="${esc(name)}">${esc(name)}</option>`).join('');
+  modal(`${header('Docentes remotos','Los cambios se guardan en este navegador. Para publicarlos, descargá el JSON y reemplazá docentes.json en GitHub.')}
+    <p><strong>${names.length}</strong> docentes en la lista</p>
+    <form id="teacherAdd">
+      <div class="field"><label for="teacherName">Nombre completo</label><input id="teacherName" required maxlength="120"></div>
+      <button class="btn" type="submit">Agregar docente</button>
+    </form>
+    <form id="teacherRemove">
+      <div class="field"><label for="teacherSelect">Docente que querés quitar</label>
+        <select id="teacherSelect" required><option value="">Elegí un nombre</option>${options}</select></div>
+      <button class="btn secondary" type="submit" ${names.length?'':'disabled'}>Quitar de la lista</button>
+      <p class="note">Las hojas ya publicadas se conservan.</p>
+    </form>
+    <p id="teacherStatus" role="status">${esc(status)}</p>
+    <div class="row"><button class="btn soft" id="teacherBack">Volver a Coordinación</button><button class="btn" id="teacherDownload">Descargar JSON</button></div>`);
+  const input=document.getElementById('teacherName');
+  document.getElementById(focusId)?.focus();
+  document.getElementById('teacherAdd').onsubmit=event=>{
+    event.preventDefault();
+    const name=input.value.trim().normalize('NFC').replace(/\s+/g,' ');
+    if(!name || names.some(entry=>entry.toLocaleLowerCase('es')===name.toLocaleLowerCase('es'))){
+      document.getElementById('teacherStatus').textContent=name?'Ese nombre ya está en la lista.':'Escribí un nombre.';
+      input.focus();
+      return;
+    }
+    updateTeacher(name,true);
+    manageTeachers(name+' se agregó a la lista.');
+  };
+  document.getElementById('teacherRemove').onsubmit=event=>{
+    event.preventDefault();
+    const name=document.getElementById('teacherSelect').value;
+    if(name && confirm('¿Quitar a '+name+' de la lista de docentes?')){
+      updateTeacher(name,false);
+      manageTeachers(name+' se quitó de la lista.','teacherSelect');
+    }
+  };
+  document.getElementById('teacherBack').onclick=adminPanel;
+  document.getElementById('teacherDownload').onclick=()=>{
+    const url=URL.createObjectURL(new Blob([JSON.stringify(teacherNames(),null,2)+'\n'],{type:'application/json'}));
+    const link=document.createElement('a');
+    link.href=url;
+    link.download='docentes.json';
+    link.click();
+    setTimeout(()=>URL.revokeObjectURL(url),500);
+  };
+}
+function seed(){const sentences=[['Gracias por tu escucha y la generosidad de compartir ideas.','Tu compañía hizo más simple cada desafío.','Valoro tu creatividad y la ayuda que brindaste.','Gracias por estar presente aun a la distancia.'],['Aprendimos juntos, compartiendo experiencias y creciendo como equipo.','Que sigamos construyendo encuentros, desafíos y aprendizajes.','Gracias por el compromiso, las risas y el trabajo colaborativo.'],['Gracias por acompañar cada etapa y sostener el proyecto.','Valoramos el trabajo silencioso de coordinación y administración.','Gracias a quienes hacen posible que todo funcione.']];for(let k=0;k<12;k++){const name='Docente de prueba '+(data.people.filter(x=>x.name.startsWith('Docente de prueba')).length+1);data.people.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random(),name,messages:cats.map((c,i)=>({text:sentences[i][(k+i)%sentences[i].length],anonymous:k%4===0,target:i===0?initialTeachers[k%initialTeachers.length]:null}))});}}
+function exportCSV(){const rows=[['docente_registrado','categoria','destinatario','mensaje','firma_publica']];leafItems().forEach(m=>rows.push([m.anonymous?'(reservado)':m.author,m.cat,m.target||'',m.text,m.anonymous?'Anónimo':m.author]));const csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(';')).join('\r\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='lo-que-sembramos-juntos-demo.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500);}
+function reveal(){if(data.revealed){render();return;}const items=leafItems(),scene=document.getElementById('scene'),box=scene.getBoundingClientRect(),scaleX=box.width/1000,scaleY=box.height/600;const targets=[[738,120],[792,254],[750,389]];const flights=Math.min(items.length,54),animationPromises=[];for(let j=0;j<flights;j++){const item=items[j],p=pos(j,items.length),goal=targets[item.index],shape=document.createElement('div');shape.className='floating';shape.style.background=colors[item.index];shape.style.left=(box.left+p.x*scaleX)+'px';shape.style.top=(box.top+p.y*scaleY)+'px';document.body.appendChild(shape);const dx=(goal[0]-p.x)*scaleX,dy=(goal[1]-p.y)*scaleY;const anim=shape.animate([{transform:'translate(-50%,-50%) rotate(0deg)',opacity:.95},{transform:`translate(calc(-50% + ${dx*.48}px),calc(-50% + ${dy*.38-35}px)) rotate(140deg)`,opacity:.95,offset:.53},{transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) rotate(300deg) scale(.3)`,opacity:0}],{duration:1200+j*24,delay:j*16,easing:'ease-in-out',fill:'forwards'});animationPromises.push(anim.finished.catch(()=>{}).then(()=>shape.remove()));}data.revealed=true;save();if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){document.querySelectorAll('.floating').forEach(n=>n.remove());}Promise.all(animationPromises).then(()=>{});}
+function activate(e,selector,cb){const el=e.target.closest(selector);if(!el)return;cb(el);}
+const teachersReady=loadPublishedTeachers();document.getElementById('giftBtn').onclick=async()=>{await teachersReady;gift();};document.getElementById('adminBtn').onclick=admin;
+document.getElementById('leaves').addEventListener('click',e=>activate(e,'.leaf',el=>readLeaf(el.dataset.id)));
+document.getElementById('leaves').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){activate(e,'.leaf',el=>readLeaf(el.dataset.id));e.preventDefault();}});
+document.getElementById('clouds').addEventListener('click',e=>activate(e,'.cloud-target',el=>cloud(el.dataset.cat)));
+document.getElementById('clouds').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){activate(e,'.cloud-target',el=>cloud(el.dataset.cat));e.preventDefault();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});window.addEventListener('storage',e=>{if(e.key===KEY){data=load();render();}});render();
+})();
+</script>
+</body></html>
