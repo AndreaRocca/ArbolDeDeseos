@@ -29,6 +29,12 @@
 .gift-edit{min-height:36px;border:0;border-radius:6px;padding:4px 8px;background:transparent;color:var(--dark);text-decoration:underline;font-weight:650}
 .gift-edit:hover{background:#ffffffb8}
 @media(max-width:420px){.gift-actions>.btn[type=submit]{flex:1}}
+.gift-identity{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;margin:16px 0;padding:10px 14px;border:1px solid #a7bda2;border-radius:12px;background:#e9f1e4;color:#2c4635}
+.gift-identity span,.gift-identity strong{display:block}
+.gift-identity span{font-size:.875rem}
+.gift-identity strong{font-size:1.12rem;overflow-wrap:anywhere}
+.gift-identity-form{padding:4px 0 0}
+#giftIdentityError{color:#a83131}
 </style>
 </head>
 <body>
@@ -214,7 +220,7 @@ function gift(){
     ['Para el equipo de coordinación','Pensá en algo que el equipo hizo posible este año. ¿Qué te gustaría contarles?','Gracias por hacer lugar para…']
   ];
   const leaf=(index,active=false)=>`<i class="gift-leaf ${active?'current':''}" style="--tone:${colors[index]}" aria-hidden="true"></i>`;
-  let step=-1, returnToReview=false, author='', target='', editing=false;
+  let step=-1, returnToReview=false, author='', target='', editing=false, originalAuthor=null;
   let notes=prompts.map(()=>({text:'',anonymous:false}));
 
   function show(){
@@ -244,9 +250,20 @@ function gift(){
           <p class="gift-quote">${esc(note.text.trim())}</p><p class="note">${note.anonymous?'Sin firma':'De '+esc(author)}</p></article>`).join('')}</div>`;
       action=editing?'Guardar mis hojas':'Sumar mis hojas al árbol';
     }
+
+    const identity=author?`<div class="gift-identity">
+      <div><span>Escribís como</span><strong>${esc(author)}</strong></div>
+      <button class="gift-edit" type="button" id="giftChangeName" aria-expanded="false" aria-controls="giftIdentityForm">Cambiar nombre</button>
+    </div>
+    <form id="giftIdentityForm" class="gift-identity-form" hidden>
+      <div class="field"><label for="giftNewName">Elegí tu nombre</label><select id="giftNewName" required>${options}</select></div>
+      <p class="note">Lo que ya escribiste se conserva.</p>
+      <p id="giftIdentityError" role="alert" hidden></p>
+      <div class="gift-actions"><button class="btn soft" type="button" id="giftCancelName">Cancelar</button><button class="btn" type="submit">Usar este nombre</button></div>
+    </form>`:'';
     modal(`<div class="gift-compose"><div class="gift-progress"><span>${colors.map((_,index)=>leaf(index,index===step)).join('')}</span>${prompt?`<span>Hoja ${step+1} de 3</span>`:''}</div>
-      ${header(title)}<form id="giftForm">${content}<div class="gift-actions">
-        ${step>=0&&!returnToReview?'<button type="button" class="btn soft" id="giftBack">Volver</button>':''}
+      ${header(title)}${identity}<form id="giftForm">${content}<div class="gift-actions">
+        ${step>0&&!returnToReview?'<button type="button" class="btn soft" id="giftBack">Volver</button>':''}
         <button class="btn" type="submit">${action}</button></div></form></div>`);
     const dialog=document.querySelector('#modalRoot .dialog');
     dialog.classList.add('gift-dialog');
@@ -273,6 +290,46 @@ function gift(){
       if(!textInput)return;
       notes[step]={text:textInput.value,anonymous:document.getElementById('giftAnonymous').checked};
       if(targetInput)target=targetInput.value;
+    }
+
+    if(author){
+      const changeButton=document.getElementById('giftChangeName');
+      const identityForm=document.getElementById('giftIdentityForm');
+      const newName=document.getElementById('giftNewName');
+      const identityError=document.getElementById('giftIdentityError');
+      function toggleIdentity(open){
+        identityForm.hidden=!open;
+        form.hidden=open;
+        changeButton.setAttribute('aria-expanded',String(open));
+        if(open){
+          newName.value=author;
+          identityError.hidden=true;
+          newName.focus();
+        }else{
+          changeButton.focus();
+        }
+      }
+      changeButton.onclick=()=>toggleIdentity(identityForm.hidden);
+      document.getElementById('giftCancelName').onclick=()=>toggleIdentity(false);
+      newName.onchange=()=>{identityError.hidden=true;};
+      identityForm.onsubmit=event=>{
+        event.preventDefault();
+        const name=newName.value;
+        if(!name || name===author){
+          toggleIdentity(false);
+          return;
+        }
+        if(data.people.some(person=>person.name===name) && name!==originalAuthor){
+          identityError.textContent='Ese nombre ya tiene hojas publicadas. Podés abrirlas desde el inicio sin reemplazarlas con este borrador.';
+          identityError.hidden=false;
+          newName.focus();
+          return;
+        }
+        remember();
+        author=name;
+        editing=name===originalAuthor;
+        show();
+      };
     }
     document.getElementById('giftBack')?.addEventListener('click',()=>{
       remember();
@@ -303,6 +360,7 @@ function gift(){
         author=nameInput.value;
         const person=data.people.find(entry=>entry.name===author);
         editing=Boolean(person);
+        originalAuthor=person?.name ?? null;
         target=person?.messages[0]?.target ?? '';
         notes=prompts.map((_,index)=>({
           text:person?.messages[index]?.text ?? '',
